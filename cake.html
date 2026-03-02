@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Countdown 🎂</title>
+
+<style>
+body{
+    background:linear-gradient(135deg,#ffd1dc,#ff9aa2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+    overflow:hidden;
+    font-family:'Arial',sans-serif;
+    flex-direction:column;
+}
+
+/* Countdown */
+#countdown{
+    font-size:2.5em;
+    color:#c2185b;
+    font-weight:bold;
+    text-align:center;
+}
+
+/* Hide cake initially */
+.cake-container{
+    display:none;
+    position:relative;
+    text-align:center;
+    animation:floatCake 3s ease-in-out infinite;
+}
+
+/* ===== CAKE DESIGN SAME AS YOURS ===== */
+
+.cake{
+    position:relative;
+    width:220px;
+    margin:0 auto;
+    filter:drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+}
+
+.layer{
+    width:220px;
+    height:60px;
+    border-radius:20px;
+    margin:0 auto;
+    position:relative;
+}
+
+.layer-bottom{ background:#6d4c41; }
+.layer-middle{ background:#8d6e63; }
+.layer-top{ background:#a1887f; }
+
+.cream{
+    width:220px;
+    height:25px;
+    background:white;
+    border-radius:50%;
+    position:absolute;
+    top:-12px;
+}
+
+.layer-top::after{
+    content:"";
+    position:absolute;
+    bottom:-10px;
+    left:0;
+    width:100%;
+    height:15px;
+    background:white;
+    border-radius:50%;
+}
+
+.drip{
+    position:absolute;
+    width:20px;
+    height:30px;
+    background:white;
+    border-radius:50%;
+}
+
+.drip1{ left:30px; top:10px;}
+.drip2{ left:80px; top:15px;}
+.drip3{ right:40px; top:12px;}
+
+.dot{
+    width:14px;
+    height:14px;
+    background:#ff4081;
+    border-radius:50%;
+    position:absolute;
+    box-shadow:0 0 10px pink;
+}
+
+.dot1{ top:20px; left:40px;}
+.dot2{ top:20px; left:90px;}
+.dot3{ top:20px; left:140px;}
+
+.candle{
+    width:14px;
+    height:55px;
+    background:repeating-linear-gradient(
+        45deg,
+        #fff,
+        #fff 5px,
+        #ff80ab 5px,
+        #ff80ab 10px
+    );
+    position:absolute;
+    top:-70px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:4px;
+}
+
+.flame{
+    width:18px;
+    height:28px;
+    background:radial-gradient(circle,#fff176 40%,orange 70%);
+    border-radius:50%;
+    position:absolute;
+    top:-28px;
+    left:50%;
+    transform:translateX(-50%);
+    animation:flicker 0.3s infinite alternate;
+    box-shadow:0 0 25px yellow,0 0 45px orange;
+}
+
+.text{
+    margin-top:40px;
+    font-size:2.8em;
+    color:#c2185b;
+    font-weight:bold;
+    animation:bounce 2s infinite;
+}
+
+/* Animations */
+@keyframes floatCake{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(-15px); }
+    100%{ transform:translateY(0); }
+}
+
+@keyframes bounce{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-10px); }
+}
+
+@keyframes flicker{
+    0%{transform:translateX(-50%) scale(1);}
+    100%{transform:translateX(-50%) scale(1.2);}
+}
+@keyframes dramaticEntry{
+    0%{
+        transform:scale(0) rotate(-20deg);
+        opacity:0;
+    }
+    60%{
+        transform:scale(1.2) rotate(10deg);
+    }
+    100%{
+        transform:scale(1) rotate(0deg);
+        opacity:1;
+    }
+}
+
+@keyframes explode{
+    0%{ transform:scale(0); opacity:1;}
+    100%{ transform:scale(3); opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="countdown"></div>
+
+<div class="cake-container" id="cake">
+
+    <div class="cake">
+
+        <div class="layer layer-bottom"></div>
+
+        <div class="layer layer-middle">
+            <div class="cream"></div>
+            <div class="drip drip1"></div>
+            <div class="drip drip2"></div>
+            <div class="drip drip3"></div>
+        </div>
+
+        <div class="layer layer-top">
+            <div class="cream"></div>
+            <div class="dot dot1"></div>
+            <div class="dot dot2"></div>
+            <div class="dot dot3"></div>
+        </div>
+
+        <div class="candle">
+            <div class="flame"></div>
+        </div>
+
+    </div>
+
+    <div class="text">🎉 Happy Birthday Mera Babuu 🎉</div>
+
+</div>
+
+<script>
+// ===== TARGET DATE =====
+const targetDate = new Date("March 3, 2026 00:00:00").getTime();
+
+const countdown = document.getElementById("countdown");
+const cake = document.getElementById("cake");
+
+// Create dramatic overlay
+const flash = document.createElement("div");
+flash.style.position = "fixed";
+flash.style.top = "0";
+flash.style.left = "0";
+flash.style.width = "100%";
+flash.style.height = "100%";
+flash.style.background = "white";
+flash.style.opacity = "0";
+flash.style.transition = "opacity 1s";
+flash.style.pointerEvents = "none";
+document.body.appendChild(flash);
+
+// Add music
+const music = new Audio("https://www.soundjay.com/human/applause-8.mp3");
+
+setInterval(function(){
+
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if(distance <= 0){
+
+        countdown.style.transition = "opacity 2s";
+        countdown.style.opacity = "0";
+
+        setTimeout(()=>{
+            countdown.style.display = "none";
+
+            // FLASH EFFECT
+            flash.style.opacity = "1";
+            setTimeout(()=> flash.style.opacity = "0", 500);
+
+            // Show cake dramatically
+            cake.style.display = "block";
+            cake.style.animation = "dramaticEntry 2s ease forwards";
+
+            // Play music
+            music.play();
+
+            // Fireworks
+            startFireworks();
+
+        },2000);
+
+        return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    countdown.innerHTML = `
+    💖 Countdown to 3 March 2026 💖<br><br>
+    ${days}d ${hours}h ${minutes}m ${seconds}s
+    `;
+
+},1000);
+
+// ===== FIREWORKS =====
+function startFireworks(){
+    for(let i=0;i<20;i++){
+        let spark = document.createElement("div");
+        spark.style.position="fixed";
+        spark.style.width="8px";
+        spark.style.height="8px";
+        spark.style.borderRadius="50%";
+        spark.style.background="gold";
+        spark.style.left=Math.random()*100+"%";
+        spark.style.top=Math.random()*100+"%";
+        spark.style.boxShadow="0 0 20px yellow";
+        spark.style.animation="explode 1s ease-out forwards";
+        document.body.appendChild(spark);
+        setTimeout(()=>spark.remove(),1000);
+    }
+}
+</script>
+
+</body>
+</html>
